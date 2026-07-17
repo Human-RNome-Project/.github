@@ -1,0 +1,86 @@
+digraph G {
+    fontname="Helvetica,Arial,sans-serif"
+    node [fontname="Helvetica,Arial,sans-serif", shape=box, style="filled,rounded", margin=0.2];
+    edge [fontname="Helvetica,Arial,sans-serif", color="#64748b", penwidth=1.5];
+    rankdir=LR;
+    nodesep=0.6;
+    ranksep=0.9;
+
+    Raw [shape=cylinder, label="Raw Data\nhttps://doi.org/\n10.25585/DOE-HRP/3377574", color="#10b981", fillcolor="#d1fae5", fontcolor="#064e3b"];
+
+    // Raw Data Processing Pipelines
+    node [color="#3b82f6", fillcolor="#eff6ff", fontcolor="#1e3a8a"];
+    LRS_Proc [label="LRS_Reanalysis\ndata_processing_pipelines/\nLRS_Reanalysis"];
+    MS_Proc [label="OpenMS\ndata_processing_pipelines/\nOpenMS"];
+
+    // Platform Specific BED files
+    node [shape=note, color="#ec4899", fillcolor="#fdf2f8", fontcolor="#831843"];
+    LRS_Bed [label="LRS Platform\nBED File"];
+    SRS_Bed [label="SRS Platform\nBED File"];
+    MS_Bed [label="MS Platform\nBED File"];
+
+    // Secondary Processing
+    node [shape=box, color="#3b82f6", fillcolor="#eff6ff", fontcolor="#1e3a8a"];
+    RDD [label="RDD-analysis\ndata_processing_pipelines/\nRDD-analysis"];
+    MS_Cons [label="MS_consensus_creation\ndata_processing_pipelines/\nMS_consensus_creation"];
+
+    // Consensus Draft Pipeline
+    node [color="#8b5cf6", fillcolor="#ede9fe", fontcolor="#4c1d95"];
+    GlobalConsensusProc [label="consensus-draft-sequence pipeline\ndata_processing_pipelines/\nconsensus-draft-sequence"];
+    
+    node [shape=note, color="#ec4899", fillcolor="#fdf2f8", fontcolor="#831843"];
+    Consensus_File [label="Consensus Draft\nSequence File"];
+
+    // UCSC Pipeline
+    node [shape=box, color="#8b5cf6", fillcolor="#ede9fe", fontcolor="#4c1d95"];
+    UCSC_Proc [label="HRP_UCSC_hub pipeline\ndata_processing_pipelines/\nHRP_UCSC_hub"];
+
+    // Figures
+    node [shape=note, color="#f59e0b", fillcolor="#fef3c7", fontcolor="#92400e"];
+    Fig3 [label="figure_03\nfigure_generation/\nfigure_03"];
+    Fig6 [label="figure_06\nfigure_generation/\nfigure_06"];
+    Fig9 [label="figure_09\nfigure_generation/\nfigure_09"];
+    Fig10 [label="figure_10\nfigure_generation/\nfigure_10"];
+    Fig11 [label="figure_11\nfigure_generation/\nfigure_11"];
+    Fig12 [label="figure_12_consensus\nfigure_generation/\nfigure_12_consensus"];
+    Fig13 [label="figure_13_rdd\nfigure_generation/\nfigure_13_rdd"];
+    Fig14 [label="Figure 14"];
+
+    // Raw -> Processing -> BED
+    Raw -> LRS_Proc; LRS_Proc -> LRS_Bed;
+    Raw -> SRS_Bed;
+    Raw -> MS_Proc; MS_Proc -> MS_Cons; MS_Cons -> MS_Bed;
+
+
+
+    // BED -> Figures / Secondary Pipelines
+    LRS_Bed -> RDD; RDD -> Fig13;
+    LRS_Bed -> Fig9;
+
+    SRS_Bed -> Fig10;
+    SRS_Bed -> Fig11;
+    SRS_Bed -> Fig6;
+
+    MS_Bed -> Fig6;
+    MS_Bed -> Fig3;
+
+    // BED -> Consensus Pipeline -> Consensus File
+    LRS_Bed -> GlobalConsensusProc [penwidth=2.5, color="#8b5cf6"];
+    SRS_Bed -> GlobalConsensusProc [penwidth=2.5, color="#8b5cf6"];
+    MS_Bed -> GlobalConsensusProc [penwidth=2.5, color="#8b5cf6"];
+    GlobalConsensusProc -> Consensus_File [penwidth=2.5, color="#8b5cf6"];
+
+    Consensus_File -> Fig12;
+
+    // BED + Consensus File -> UCSC -> Fig 14
+    LRS_Bed -> UCSC_Proc [style=dotted, penwidth=2.0];
+    SRS_Bed -> UCSC_Proc [style=dotted, penwidth=2.0];
+    MS_Bed -> UCSC_Proc [style=dotted, penwidth=2.0];
+    Consensus_File -> UCSC_Proc [penwidth=2.5, color="#8b5cf6"];
+
+    UCSC_Proc -> Fig14;
+
+    // Force sequential layout of figures top-to-bottom
+    { rank=same; Fig3; Fig6; Fig9; Fig10; Fig11; Fig12; Fig13; Fig14; }
+    Fig3 -> Fig6 -> Fig9 -> Fig10 -> Fig11 -> Fig12 -> Fig13 -> Fig14 [style=invis];
+}
