@@ -1,7 +1,7 @@
 digraph G {
-    fontname="Helvetica,Arial,sans-serif"
-    node [fontname="Helvetica,Arial,sans-serif", shape=box, style="filled,rounded", margin=0.2];
-    edge [fontname="Helvetica,Arial,sans-serif", color="#64748b", penwidth=1.5];
+    fontname="Helvetica-Bold,Arial-Bold,sans-serif"
+    node [fontname="Helvetica-Bold,Arial-Bold,sans-serif", fontsize=28, shape=box, style="filled,rounded", margin=0.2];
+    edge [fontname="Helvetica-Bold,Arial-Bold,sans-serif", fontsize=26, color="#64748b", penwidth=1.5];
     rankdir=LR;
     nodesep=0.6;
     ranksep=0.9;
@@ -21,7 +21,7 @@ digraph G {
 
     // Secondary Processing
     node [shape=box, color="#3b82f6", fillcolor="#eff6ff", fontcolor="#1e3a8a"];
-    RDD [label="RDD-analysis\ndata_processing_pipelines/\nRDD-analysis"];
+    RDD [label="RNA_modification_estimation\ndata_processing_pipelines/\nRNA_modification_estimation"];
     MS_Cons [label="MS_consensus_creation\ndata_processing_pipelines/\nMS_consensus_creation"];
 
     // Consensus Draft Pipeline
@@ -39,11 +39,12 @@ digraph G {
     node [shape=note, color="#f59e0b", fillcolor="#fef3c7", fontcolor="#92400e"];
     Fig3 [label="figure_03\nfigure_generation/\nfigure_03"];
     Fig6 [label="figure_06\nfigure_generation/\nfigure_06"];
+    Fig8 [label="figure_08\nfigure_generation/\nfigure_08"];
     Fig9 [label="figure_09\nfigure_generation/\nfigure_09"];
     Fig10 [label="figure_10\nfigure_generation/\nfigure_10"];
     Fig11 [label="figure_11\nfigure_generation/\nfigure_11"];
     Fig12 [label="figure_12_consensus\nfigure_generation/\nfigure_12_consensus"];
-    Fig13 [label="figure_13_rdd\nfigure_generation/\nfigure_13_rdd"];
+    Fig13 [label="figure_13_RNA_modification_estimation\nfigure_generation/\nfigure_13_RNA_modification_estimation"];
     Fig14 [label="Figure 14"];
 
     // Raw -> Processing -> BED
@@ -55,6 +56,7 @@ digraph G {
 
     // BED -> Figures / Secondary Pipelines
     LRS_Bed -> RDD; RDD -> Fig13;
+    LRS_Bed -> Fig8;
     LRS_Bed -> Fig9;
 
     SRS_Bed -> Fig10;
@@ -81,6 +83,6 @@ digraph G {
     UCSC_Proc -> Fig14;
 
     // Force sequential layout of figures top-to-bottom
-    { rank=same; Fig3; Fig6; Fig9; Fig10; Fig11; Fig12; Fig13; Fig14; }
-    Fig3 -> Fig6 -> Fig9 -> Fig10 -> Fig11 -> Fig12 -> Fig13 -> Fig14 [style=invis];
+    { rank=same; Fig3; Fig6; Fig8; Fig9; Fig10; Fig11; Fig12; Fig13; Fig14; }
+    Fig3 -> Fig6 -> Fig8 -> Fig9 -> Fig10 -> Fig11 -> Fig12 -> Fig13 -> Fig14 [style=invis];
 }
